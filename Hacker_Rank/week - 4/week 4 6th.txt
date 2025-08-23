@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int min(int a, int b) { return a < b ? a : b; }
+
+int min_of_max(int arr[], int n, int k) {
+    int *deque = malloc(n * sizeof(int));
+    int front = 0, back = -1;
+    int minMax = __INT_MAX__;
+
+    for (int i = 0; i < n; i++) {
+        while (front <= back && deque[front] <= i - k) front++;
+        while (front <= back && arr[deque[back]] <= arr[i]) back--;
+        deque[++back] = i;
+        if (i >= k - 1) {
+            minMax = min(minMax, arr[deque[front]]);
+        }
+    }
+
+    free(deque);
+    return minMax;
+}
+
+int main() {
+    int n, q;
+    scanf("%d %d", &n, &q);
+    int arr[n];
+    for (int i = 0; i < n; i++) scanf("%d", &arr[i]);
+
+    for (int i = 0; i < q; i++) {
+        int k;
+        scanf("%d", &k);
+        printf("%d\n", min_of_max(arr, n, k));
+    }
+
+    return 0;
+}

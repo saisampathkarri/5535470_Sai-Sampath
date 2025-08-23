@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+void maxSubarray(int arr[], int n) {
+    int maxSub = arr[0], current = arr[0];
+    int maxSeq = arr[0] > 0 ? arr[0] : arr[0];
+
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > 0) {
+            if (maxSeq > 0) maxSeq += arr[i];
+            else maxSeq = arr[i];
+        } else if (maxSeq < 0 && arr[i] > maxSeq) {
+            maxSeq = arr[i];
+        }
+
+        if (current + arr[i] > arr[i]) current += arr[i];
+        else current = arr[i];
+
+        if (current > maxSub) maxSub = current;
+    }
+
+    printf("%d %d\n", maxSub, maxSeq);
+}
+
+int main() {
+    int t;
+    scanf("%d", &t);
+    while (t--) {
+        int n;
+        scanf("%d", &n);
+        int arr[n];
+        for (int i = 0; i < n; i++) scanf("%d", &arr[i]);
+        maxSubarray(arr, n);
+    }
+    return 0;
+}

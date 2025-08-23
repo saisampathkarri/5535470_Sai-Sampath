@@ -1,0 +1,70 @@
+#include <stdio.h>
+
+#define MAXR 200
+#define MAXC 200
+
+int R, C, N;
+char grid[MAXR][MAXC + 1];
+char first[MAXR][MAXC + 1];
+char second[MAXR][MAXC + 1];
+
+void fillBombs(char arr[MAXR][MAXC + 1]) {
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            arr[i][j] = 'O';
+        }
+        arr[i][C] = '\0';
+    }
+}
+
+void detonate(char src[MAXR][MAXC + 1], char dest[MAXR][MAXC + 1]) {
+    fillBombs(dest);
+    int dx[] = {0, 1, -1, 0, 0};
+    int dy[] = {0, 0, 0, 1, -1};
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            if (src[i][j] == 'O') {
+                for (int k = 0; k < 5; k++) {
+                    int ni = i + dx[k], nj = j + dy[k];
+                    if (ni >= 0 && ni < R && nj >= 0 && nj < C) {
+                        dest[ni][nj] = '.';
+                    }
+                }
+            }
+        }
+    }
+}
+
+void printGrid(char arr[MAXR][MAXC + 1]) {
+    for (int i = 0; i < R; i++) {
+        printf("%s\n", arr[i]);
+    }
+}
+
+int main() {
+    scanf("%d %d %d", &R, &C, &N);
+    for (int i = 0; i < R; i++) {
+        scanf("%s", grid[i]);
+    }
+
+    if (N == 1) {
+        printGrid(grid);
+        return 0;
+    }
+
+    if (N % 2 == 0) {
+        char full[MAXR][MAXC + 1];
+        fillBombs(full);
+        printGrid(full);
+        return 0;
+    }
+
+    detonate(grid, first);   
+    detonate(first, second); 
+    if (N % 4 == 3)
+        printGrid(first);
+    else
+        printGrid(second);
+
+    return 0;
+}

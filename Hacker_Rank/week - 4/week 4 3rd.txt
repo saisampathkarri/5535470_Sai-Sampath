@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+#define MOD 1000000007
+
+long long powmod(long long base, long long exp) {
+    long long res = 1;
+    while (exp > 0) {
+        if (exp & 1) res = (res * base) % MOD;
+        base = (base * base) % MOD;
+        exp >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int t;
+    scanf("%d", &t);
+    while (t--) {
+        int n, m;
+        scanf("%d %d", &n, &m);
+
+        long long row[m+1], total[m+1], solid[m+1];
+        memset(row, 0, sizeof(row));
+        memset(total, 0, sizeof(total));
+        memset(solid, 0, sizeof(solid));
+
+        row[0] = 1;
+        for (int i = 1; i <= m; i++) {
+            for (int b = 1; b <= 4; b++) {
+                if (i - b >= 0) row[i] = (row[i] + row[i - b]) % MOD;
+            }
+        }
+
+        for (int i = 1; i <= m; i++) {
+            total[i] = powmod(row[i], n);
+        }
+
+        for (int i = 1; i <= m; i++) {
+            long long invalid = 0;
+            for (int j = 1; j < i; j++) {
+                invalid = (invalid + solid[j] * total[i - j]) % MOD;
+            }
+            solid[i] = (total[i] - invalid + MOD) % MOD;
+        }
+
+        printf("%lld\n", solid[m]);
+    }
+    return 0;
+}

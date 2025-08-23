@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *arr;
+    int size;
+} MinHeap;
+
+MinHeap* createHeap(int n) {
+    MinHeap* heap = malloc(sizeof(MinHeap));
+    heap->arr = malloc(sizeof(int) * n);
+    heap->size = 0;
+    return heap;
+}
+
+void swap(int *a, int *b) { int t = *a; *a = *b; *b = t; }
+
+void heapifyUp(MinHeap* h, int i) {
+    while (i && h->arr[i] < h->arr[(i-1)/2]) {
+        swap(&h->arr[i], &h->arr[(i-1)/2]);
+        i = (i-1)/2;
+    }
+}
+
+void heapifyDown(MinHeap* h, int i) {
+    int left, right, smallest;
+    while (1) {
+        left = 2*i + 1;
+        right = 2*i + 2;
+        smallest = i;
+        if (left < h->size && h->arr[left] < h->arr[smallest]) smallest = left;
+        if (right < h->size && h->arr[right] < h->arr[smallest]) smallest = right;
+        if (smallest != i) { swap(&h->arr[i], &h->arr[smallest]); i = smallest; }
+        else break;
+    }
+}
+
+void insert(MinHeap* h, int val) {
+    h->arr[h->size++] = val;
+    heapifyUp(h, h->size-1);
+}
+
+int extractMin(MinHeap* h) {
+    int min = h->arr[0];
+    h->arr[0] = h->arr[--h->size];
+    heapifyDown(h, 0);
+    return min;
+}
+
+int cookies(int k, int A[], int n) {
+    MinHeap* heap = createHeap(n);
+    for (int i = 0; i < n; i++) insert(heap, A[i]);
+    int operations = 0;
+
+    while (heap->size > 0 && heap->arr[0] < k) {
+        if (heap->size < 2) return -1;
+        int least = extractMin(heap);
+        int second = extractMin(heap);
+        int newCookie = least + 2*second;
+        insert(heap, newCookie);
+        operations++;
+    }
+    return operations;
+}
+
+int main() {
+    int n, k;
+    scanf("%d %d", &n, &k);
+    int A[n];
+    for (int i = 0; i < n; i++) scanf("%d", &A[i]);
+    printf("%d\n", cookies(k, A, n));
+    return 0;
+}

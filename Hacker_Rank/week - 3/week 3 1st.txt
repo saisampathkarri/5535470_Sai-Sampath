@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int type;
+    char *data;
+    int length;
+} Operation;
+
+int main() {
+    int Q;
+    scanf("%d", &Q);
+
+    Operation *stack = malloc((Q + 5) * sizeof(Operation));
+    int top = -1;
+
+    char *S = malloc(1000005);
+    int slen = 0;
+    S[0] = '\0';
+
+    for (int i = 0; i < Q; i++) {
+        int type;
+        scanf("%d", &type);
+
+        if (type == 1) { 
+            char W[1000001];
+            scanf("%s", W);
+            int len = strlen(W);
+            stack[++top].type = 1;
+            stack[top].length = len;
+            stack[top].data = NULL;
+            memcpy(S + slen, W, len);
+            slen += len;
+            S[slen] = '\0';
+        }
+        else if (type == 2) { 
+            int k;
+            scanf("%d", &k);
+            if (k > slen) k = slen;
+            stack[++top].type = 2;
+            stack[top].length = k;
+            stack[top].data = malloc(k + 1);
+            memcpy(stack[top].data, S + slen - k, k);
+            stack[top].data[k] = '\0';
+            slen -= k;
+            S[slen] = '\0';
+        }
+        else if (type == 3) { 
+            int k;
+            scanf("%d", &k);
+            if (k >= 1 && k <= slen)
+                printf("%c\n", S[k - 1]);
+        }
+        else if (type == 4) { 
+            if (top >= 0) {
+                Operation op = stack[top--];
+                if (op.type == 1) { 
+                    slen -= op.length;
+                    if (slen < 0) slen = 0;
+                    S[slen] = '\0';
+                } else if (op.type == 2) { 
+                    memcpy(S + slen, op.data, op.length);
+                    slen += op.length;
+                    S[slen] = '\0';
+                    free(op.data);
+                }
+            }
+        }
+    }
+
+    while (top >= 0) { 
+        if (stack[top].type == 2 && stack[top].data)
+            free(stack[top].data);
+        top--;
+    }
+
+    free(stack);
+    free(S);
+    return 0;
+}

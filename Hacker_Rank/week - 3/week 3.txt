@@ -1,0 +1,475 @@
+----------------------------------------WEEK 3--------------------------------------
+**BOMBERMAN GAME
+CODE:
+
+#include <stdio.h>
+#define MAXR 200
+#define MAXC 200
+
+int R, C, N;
+char grid[MAXR][MAXC + 1];
+char first[MAXR][MAXC + 1];
+char second[MAXR][MAXC + 1];
+
+void fillBombs(char arr[MAXR][MAXC + 1]) {
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            arr[i][j] = 'O';
+        }
+        arr[i][C] = '\0';
+    }
+}
+
+void detonate(char src[MAXR][MAXC + 1], char dest[MAXR][MAXC + 1]) {
+    fillBombs(dest);
+    int dx[] = {0, 1, -1, 0, 0};
+    int dy[] = {0, 0, 0, 1, -1};
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            if (src[i][j] == 'O') {
+                for (int k = 0; k < 5; k++) {
+                    int ni = i + dx[k], nj = j + dy[k];
+                    if (ni >= 0 && ni < R && nj >= 0 && nj < C) {
+                        dest[ni][nj] = '.';
+                    }
+                }
+            }
+        }
+    }
+}
+
+void printGrid(char arr[MAXR][MAXC + 1]) {
+    for (int i = 0; i < R; i++) {
+        printf("%s\n", arr[i]);
+    }
+}
+
+int main() {
+    scanf("%d %d %d", &R, &C, &N);
+    for (int i = 0; i < R; i++) {
+        scanf("%s", grid[i]);
+    }
+
+    if (N == 1) {
+        printGrid(grid);
+        return 0;
+    }
+
+    if (N % 2 == 0) {
+        char full[MAXR][MAXC + 1];
+        fillBombs(full);
+        printGrid(full);
+        return 0;
+    }
+
+    detonate(grid, first);   
+    detonate(first, second); 
+    if (N % 4 == 3)
+        printGrid(first);
+    else
+        printGrid(second);
+
+    return 0;
+}
+-----------------------------------------------------------------------------------
+**NEW YEAR CHAOS
+CODE:
+
+#include <stdio.h>
+
+#define MAXR 200
+#define MAXC 200
+
+int R, C, N;
+char grid[MAXR][MAXC + 1];
+char first[MAXR][MAXC + 1];
+char second[MAXR][MAXC + 1];
+
+void fillBombs(char arr[MAXR][MAXC + 1]) {
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            arr[i][j] = 'O';
+        }
+        arr[i][C] = '\0';
+    }
+}
+
+void detonate(char src[MAXR][MAXC + 1], char dest[MAXR][MAXC + 1]) {
+    fillBombs(dest);
+    int dx[] = {0, 1, -1, 0, 0};
+    int dy[] = {0, 0, 0, 1, -1};
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            if (src[i][j] == 'O') {
+                for (int k = 0; k < 5; k++) {
+                    int ni = i + dx[k], nj = j + dy[k];
+                    if (ni >= 0 && ni < R && nj >= 0 && nj < C) {
+                        dest[ni][nj] = '.';
+                    }
+                }
+            }
+        }
+    }
+}
+
+void printGrid(char arr[MAXR][MAXC + 1]) {
+    for (int i = 0; i < R; i++) {
+        printf("%s\n", arr[i]);
+    }
+}
+
+int main() {
+    scanf("%d %d %d", &R, &C, &N);
+    for (int i = 0; i < R; i++) {
+        scanf("%s", grid[i]);
+    }
+
+    if (N == 1) {
+        printGrid(grid);
+        return 0;
+    }
+
+    if (N % 2 == 0) {
+        char full[MAXR][MAXC + 1];
+        fillBombs(full);
+        printGrid(full);
+        return 0;
+    }
+
+    detonate(grid, first);   
+    detonate(first, second); 
+    if (N % 4 == 3)
+        printGrid(first);
+    else
+        printGrid(second);
+
+    return 0;
+}
+-----------------------------------------------------------------------------------
+**SHERLOCK AND VALID STRING
+CODE:
+
+#include <stdio.h>
+#include <string.h>
+#define MAXC 26
+const char* isValid(char* s) {
+    int freq[MAXC] = {0};
+    for (int i = 0; s[i]; i++) freq[s[i] - 'a']++;
+
+    int f1 = 0, f2 = 0, c1 = 0, c2 = 0;
+    for (int i = 0; i < MAXC; i++) {
+        if (freq[i] == 0) continue;
+        if (f1 == 0 || freq[i] == f1) {
+            f1 = freq[i];
+            c1++;
+        } else if (f2 == 0 || freq[i] == f2) {
+            f2 = freq[i];
+            c2++;
+        } else {
+            return "NO";
+        }
+    }
+
+    if (f2 == 0) return "YES"; 
+    if ((c1 == 1 && (f1 - 1 == f2 || f1 == 1)) ||
+        (c2 == 1 && (f2 - 1 == f1 || f2 == 1)))
+        return "YES";
+
+    return "NO";
+}
+
+int main() {
+    char s[100005];
+    scanf("%s", s);
+    printf("%s\n", isValid(s));
+    return 0;
+}
+------------------------------------------------------------------------------------
+**CLIMBING THE LEADERBOARD
+CODE:
+
+#include <stdio.h>
+int main() {
+    int n;
+    scanf("%d", &n);
+    int ranked[n];
+    for (int i = 0; i < n; i++) scanf("%d", &ranked[i]);
+    int m;
+    scanf("%d", &m);
+    int player[m];
+    for (int i = 0; i < m; i++) scanf("%d", &player[i]);
+
+    int distinct[n], dcount = 0;
+    distinct[dcount++] = ranked[0];
+    for (int i = 1; i < n; i++)
+        if (ranked[i] != ranked[i - 1]) distinct[dcount++] = ranked[i];
+
+    int idx = dcount - 1;
+    for (int i = 0; i < m; i++) {
+        while (idx >= 0 && player[i] >= distinct[idx]) idx--;
+        printf("%d\n", idx + 2);
+    }
+    return 0;
+}
+-----------------------------------------------------------------------------------
+**ICE CREAM PARLOR
+CODE:
+
+#include <stdio.h>
+int main() {
+    int t;
+    scanf("%d", &t);
+    while (t--) {
+        int m, n, i, j;
+        scanf("%d", &m);
+        scanf("%d", &n);
+        int cost[n];
+        for (i = 0; i < n; i++) scanf("%d", &cost[i]);
+        for (i = 0; i < n; i++) {
+            for (j = i + 1; j < n; j++) {
+                if (cost[i] + cost[j] == m) {
+                    printf("%d %d\n", i + 1, j + 1);
+                    i = n;
+                    break;
+                }
+            }
+        }
+    }
+    return 0;
+}
+------------------------------------------------------------------------------------
+**Queue using Two Stacks
+CODE:
+
+#include <stdio.h>
+#define MAX 100000
+
+int stack1[MAX], top1 = -1;
+int stack2[MAX], top2 = -1;
+
+void push1(int x) { stack1[++top1] = x; }
+void push2(int x) { stack2[++top2] = x; }
+int pop1() { return stack1[top1--]; }
+int pop2() { return stack2[top2--]; }
+int peek2() { return stack2[top2]; }
+
+void enqueue(int x) { push1(x); }
+
+void shiftStacks() {
+    if (top2 == -1)
+        while (top1 != -1)
+            push2(pop1());
+}
+
+void dequeue() {
+    shiftStacks();
+    pop2();
+}
+
+void printFront() {
+    shiftStacks();
+    printf("%d\n", peek2());
+}
+
+int main() {
+    int q, type, x;
+    scanf("%d", &q);
+    while (q--) {
+        scanf("%d", &type);
+        if (type == 1) {
+            scanf("%d", &x);
+            enqueue(x);
+        } else if (type == 2) {
+            dequeue();
+        } else if (type == 3) {
+            printFront();
+        }
+    }
+    return 0;
+}
+------------------------------------------------------------------------------------
+**BALANCED BRACKETS
+CODE:
+
+#include <stdio.h>
+#include <string.h>
+#define MAX 1000
+
+int isBalanced(char *s) {
+    char stack[MAX];
+    int top = -1;
+    for (int i = 0; s[i] != '\0'; i++) {
+        char c = s[i];
+        if (c == '(' || c == '{' || c == '[') {
+            stack[++top] = c;
+        } else {
+            if (top == -1) return 0;
+            char topChar = stack[top--];
+            if ((c == ')' && topChar != '(') ||
+                (c == '}' && topChar != '{') ||
+                (c == ']' && topChar != '['))
+                return 0;
+        }
+    }
+    return top == -1;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    char s[MAX];
+    for (int i = 0; i < n; i++) {
+        scanf("%s", s);
+        if (isBalanced(s)) printf("YES\n");
+        else printf("NO\n");
+    }
+    return 0;
+}
+-----------------------------------------------------------------------------------
+**WAITER
+CODE:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int is_prime(int x) {
+    if (x < 2) return 0;
+    for (int i = 2; i * i <= x; i++)
+        if (x % i == 0) return 0;
+    return 1;
+}
+
+void generate_primes(int *primes, int q) {
+    int num = 2, count = 0;
+    while (count < q) {
+        if (is_prime(num)) primes[count++] = num;
+        num++;
+    }
+}
+
+int main() {
+    int n, q;
+    scanf("%d %d", &n, &q);
+    int *A = malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++) scanf("%d", &A[i]);
+
+    int *primes = malloc(q * sizeof(int));
+    generate_primes(primes, q);
+
+    int *result = malloc(n * sizeof(int));
+    int res_count = 0;
+
+    for (int i = 0; i < q; i++) {
+        int *B = malloc(n * sizeof(int));
+        int *next_A = malloc(n * sizeof(int));
+        int b_top = 0, a_top = 0;
+        for (int j = n - 1; j >= 0; j--) {
+            if (A[j] % primes[i] == 0) B[b_top++] = A[j];
+            else next_A[a_top++] = A[j];
+        }
+        for (int j = b_top - 1; j >= 0; j--) result[res_count++] = B[j];
+        free(A);
+        A = next_A;
+        n = a_top;
+        free(B);
+    }
+    for (int j = n - 1; j >= 0; j--) result[res_count++] = A[j];
+
+    for (int i = 0; i < res_count; i++) printf("%d\n", result[i]);
+
+    free(A);
+    free(primes);
+    free(result);
+    return 0;
+}
+----------------------------------------------------------------------------------
+**SIMPLE TEXT EDITOR
+CODE:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int type;
+    char *data;
+    int length;
+} Operation;
+
+int main() {
+    int Q;
+    scanf("%d", &Q);
+
+    Operation *stack = malloc((Q + 5) * sizeof(Operation));
+    int top = -1;
+
+    char *S = malloc(1000005);
+    int slen = 0;
+    S[0] = '\0';
+
+    for (int i = 0; i < Q; i++) {
+        int type;
+        scanf("%d", &type);
+
+        if (type == 1) { 
+            char W[1000001];
+            scanf("%s", W);
+            int len = strlen(W);
+            stack[++top].type = 1;
+            stack[top].length = len;
+            stack[top].data = NULL;
+            memcpy(S + slen, W, len);
+            slen += len;
+            S[slen] = '\0';
+        }
+        else if (type == 2) { 
+            int k;
+            scanf("%d", &k);
+            if (k > slen) k = slen;
+            stack[++top].type = 2;
+            stack[top].length = k;
+            stack[top].data = malloc(k + 1);
+            memcpy(stack[top].data, S + slen - k, k);
+            stack[top].data[k] = '\0';
+            slen -= k;
+            S[slen] = '\0';
+        }
+        else if (type == 3) { 
+            int k;
+            scanf("%d", &k);
+            if (k >= 1 && k <= slen)
+                printf("%c\n", S[k - 1]);
+        }
+        else if (type == 4) { 
+            if (top >= 0) {
+                Operation op = stack[top--];
+                if (op.type == 1) { 
+                    slen -= op.length;
+                    if (slen < 0) slen = 0;
+                    S[slen] = '\0';
+                } else if (op.type == 2) { 
+                    memcpy(S + slen, op.data, op.length);
+                    slen += op.length;
+                    S[slen] = '\0';
+                    free(op.data);
+                }
+            }
+        }
+    }
+
+    while (top >= 0) { 
+        if (stack[top].type == 2 && stack[top].data)
+            free(stack[top].data);
+        top--;
+    }
+
+    free(stack);
+    free(S);
+    return 0;
+}
+------------------------------------------------------------------------------------
+
+
+
+
